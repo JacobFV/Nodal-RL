@@ -89,7 +89,11 @@ Nodes do not compute updates simultaneously or even at the same frequency though
 
 $\starget[t+p]=\text{weighted ave}(\{\langle w_{pred},\spred[t+p]\rangle\} \cup \{\langle \n[ch].w_{\mathcal{Pa}_i}\CER(\n[ch].\otarget[\tau])\times e^{-\n[ch].\lambda(t+p-\tau)}, \n[ch].\otarget[\tau]\rangle\ |\ \exists\n[ch].\otarget[\tau];\ \tau=\max [t-N_o:t+p];\ \forall\n[ch]\in\nchildren\})$
 
-Target state in turn biases the target observation via the policy $\otarget=\pol(\s,\starget)$. Since the target state may be a weighted mean of several stochastic variables, child target observations with a high entropy will have less influence in the weighted mean distribution-even if its weight is large. The more certain (lower entropy) a target observation is, the greater influence it will have on its parent target state.
+Likewise, the observation $\o$ for hierarchal nodes follows as:
+
+$\o=\rm{concat}(\n[pa].\s[\tau]|\exists\n[pa].\s[\tau];\ \tau=\max [0:t+p];\forall\n[pa]\in\nparent)$
+
+Target state biases the target observation via the policy $\otarget=\pol(\s,\starget)$. Since the target state may be a weighted mean of several stochastic variables, child target observations with a high entropy will have less influence in the weighted mean distribution-even if its weight is large. The more certain (lower entropy) a target observation is, the greater influence it will have on its parent target state.
 
 This makes sibling nodes form an implicit team. One node $\n[abs\ per\ I]$ may have a very clear understanding of the dynamics of one subspace of the observation space $\mathcal{O}_i\subset\mathcal{O}$, hence producing low entropy predictions and strong opinions on what $\otarget[t+p]$ should be. At the same time, its sibling $\n[abs\ per\ II]$ may not have knowledge of that domain and therefore produce highly irrational, entropic observation targets. The result of averaging the two nodes' target observations is a distribution with relatively little influence by $\n[abs\ per\ II]$. Together, nodes form a network of experts each specializing in unique domains to give the agent open-ended intelligence.
 
@@ -160,7 +164,7 @@ Actuator nodes attempts to fulfill their children's target observations. At the 
 
 $\overline{\underline{\textbf{Algorithm:}\ \text{Actuator Node }\n{\ Update}}}$
 
-$1.\ \starget[t+p]=\text{weighted ave}(\{\langle w_{pred},\spred[t+p]\rangle\} \cup \{\langle \n[ch].w_{\mathcal{Pa}_i}\CER(\n[ch].\otarget[\tau])\times e^{-\n[ch].\lambda(t+p-\tau)}, \n[ch].\otarget[\tau]\rangle\ |\ \exists\n[ch].\otarget[\tau];\ \tau=\max [t-N_o:t+p];\ \forall\n[ch]\in\nchildren\})$
+$1.\ \starget[t+p]=\text{weighted ave}(\{\langle \n[ch].w_{\mathcal{Pa}_i}\CER(\n[ch].\otarget[\tau])\times e^{-\n[ch].\lambda(t+p-\tau)}, \n[ch].\otarget[\tau]\rangle\ |\ \exists\n[ch].\otarget[\tau];\ \tau=\max [t-N_o:t+p];\ \forall\n[ch]\in\nchildren\})$
 
 $2.\ \text{execute } \overset{\small{N_s}}{\Ex}[\starget[t+p]] \quad\rhd\text{execute weighted target state sampling }N_s\text{ times}$
 
@@ -176,7 +180,7 @@ Information nodes simultaneously engage in bottom-up processing and propagate to
 
 $\overline{\underline{\textbf{Algorithm:}\ \text{Information Node }\n{\ Update}}}$
 
-$1.\ \mathbf{store}\ \otrue=\rm{concat}(\n[parent].\s|\forall\n[parent]\in\nparent)$
+$1.\ \otrue=\rm{concat}(\n[pa].\s[\tau]|\exists\n[pa].\s[\tau];\ \tau=\max [0:t+p];\forall\n[pa]\in\nparent)$
 
 $2.\ d_t^{ave}=d_t^{ave}+\alpha_{d,1}\frac{I(\otrue)}{H(\s[t-p])}$
 
@@ -270,18 +274,18 @@ AGI-0's node-based architecture allows different networks to share underlying no
 
 ![similarities](https://mermaid.ink/img/eyJjb2RlIjoiZ3JhcGggVERcbiAgQVtvYnNlcnZhdGlvbnMgdXAgdG8gdF1cbiAgQltiaWFzaW5nIGluZm9ybWF0aW9uXVxuICBDW3RhcmdldCBvYnNlcnZhdGlvbl1cblxuICBEKGFic3RyYWN0b3IpXG4gIEUocHJlZGljdG9yKVxuICBGW3RhcmdldCBzdGF0ZV1cbiAgRyhwb2xpY3kpXG5cbiAgQSAtLT4gRFxuICBEIC0tPiBFXG4gIEUgLS0-IEZcbiAgQiAtLT4gRlxuXG4gIEYgLS0-IEdcbiAgRyAtLT4gQ1xuXG4gIElbdG9rZW4gc2VxdWVuY2VdIC0tPiBKKHRyYW5zZm9ybWVyKVxuICBKIC0tPiBLKGxhbmd1YWdlIG1vZGVsaW5nIGhlYWQpXG4gIEsgLS0-IExbbmV4dCB0b2tlbl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ)
 <!-- https://mermaid-js.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVERcbiAgQVtvYnNlcnZhdGlvbnMgdXAgdG8gdF1cbiAgQltiaWFzaW5nIGluZm9ybWF0aW9uXVxuICBDW3RhcmdldCBvYnNlcnZhdGlvbl1cblxuICBEKGFic3RyYWN0b3IpXG4gIEUocHJlZGljdG9yKVxuICBGW3RhcmdldCBzdGF0ZV1cbiAgRyhwb2xpY3kpXG5cbiAgQSAtLT4gRFxuICBEIC0tPiBFXG4gIEUgLS0-IEZcbiAgQiAtLT4gRlxuXG4gIEYgLS0-IEdcbiAgRyAtLT4gQ1xuXG4gIElbdG9rZW4gc2VxdWVuY2VdIC0tPiBKKHRyYW5zZm9ybWVyKVxuICBKIC0tPiBLKGxhbmd1YWdlIG1vZGVsaW5nIGhlYWQpXG4gIEsgLS0-IExbbmV4dCB0b2tlbl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9LCJ1cGRhdGVFZGl0b3IiOmZhbHNlfQ -->
-In the above comparison between a language modeling transformer and an information node, note that the predictor must be trained on supervised data. This could be implimented by initializing or even freezing the abstractor's weights with the transformer network, training the predictor to predict embedding transitions, and forcing the policy to produce the required next token from that predicted embedding (although top-down influence can change network output). 
+In the above comparison between a language modeling transformer and an information node, note that the predictor must be trained on supervised data. This could be implemented by initializing or even freezing the abstractor's weights with the transformer network, training the predictor to predict embedding transitions, and forcing the policy to produce the required next token from that predicted embedding (although top-down influence can change network output). 
 
 # Experiments
 
 To evaluate the open ended performance of Nodal-RL, experiments test 
 
-- **Architecture Deviations**: different information node functions (dense, LSTM, sparse transformer, sparse VAE, VQ-VAE, EBM, and specialized: convolutional, language models, mel-tacotron), node structures (hetero/homogeneous ensembles), and network superstructures (integrated chatbot, google search, KB query)
-- **Training**: whether the policy is allowed to learn unsupervised with the above training loop ("Putting It All Togethor") or is supervised by expert demonstration. also experimenting with various optimization tweeks such as rewarding entropic target observations, various hyperparameters
+- **Architecture Deviations**: different information node functions (dense, LSTM, sparse transformer, sparse VAE, VQ-VAE, EBM, and specialized: convolutional, language models, mel-tacotron), node structures (hetero/homogeneous ensembles), and network superstructures (integrated chatbot, Internet search, KB query)
+- **Training**: whether the policy is allowed to learn unsupervised with the above training loop ("Putting It All Together") or is supervised by expert demonstration. also experimenting with various optimization tweeks such as rewarding entropic target observations, various hyperparameters
 - **In-context and Multiple Domain learning**: how quickly the agent can adapt from pure observation without any gradient updates and measuring the performance of this adaptation across diverse skill domains 
 - **Diverse Agent-Environments**: some on the experimentation list: board games (chess, checkers, go), kinesthetic (one legged hopper, spider, humanoid), content completion (video from frame sequence, natural language modeling, image inpainting, music generation), computer interface (web surfing, VM Bash interface, VM gui interface, world of bits++), 3D worlds (MALMO, Second Life), design (natural language documents, artwork, mechanical engineering, electrical engineering using VM interface), second-hand research (using VM interface with Internet), programming (using VM interface, Desmos, GeoGebra, Bash REPL, Jupyter Python, selfML), and conditioning with only natural language conversation and interactive demonstrations to complete real world objectives.
 
-Specific experiments are published under [Notebooks](https://github.com/Nodal-RL/notebooks). In initial experiments, agents will consist of only specialized nodes. As more environments are experimented with, however, nodes will be reused with greater frequency and less architecture change. Ultimately, the agent will consist of a virtual machine interface where tasks are conditioned with an axillary natural language interface and at times by overriding the policy with manual demonstrations.
+Specific experiments are published under [Notebooks](https://github.com/Nodal-RL/notebooks). All data for a single timestep are represented by $1$-dimensional tensors. In initial experiments, agents will consist of only specialized nodes. As more environments are experimented with, however, nodes will be reused with greater frequency and less architecture change. Ultimately, the agent will consist of a virtual machine interface where tasks are conditioned with an axillary natural language interface and at times by overriding the policy with manual demonstrations.
 
 # Results
 
@@ -295,11 +299,11 @@ General conclusion here
 
 ## Questions
 
-- **How generalized can Nodel RL agents become?** Will agent performance continue improving as it acquires skills specialized for increasingly diverse domains? Can a humanoid robot controlled by Nodal RL perform reliably in the general human activity domain?
-- **Can an [imitator-imitator](https://arxiv.org/abs/1912.02875) framework be used to condition Nodel-RL agent behavior?**
+- **How generalized can Nodal-RL agents become?** Will agent performance continue improving as it acquires skills specialized for increasingly diverse domains? Can a humanoid robot controlled by Nodal RL perform reliably in the general human activity domain?
+- **Can an [imitator-imitator](https://arxiv.org/abs/1912.02875) framework be used to condition Nodal-RL agent behavior?**
 - **How could transformer neural networks learn when to dream ($\NN_{transformer}(\opast)$) instead of employing a blind rolling average ($\text{Percieved Observation }\o$)?**
 - **Can humans learn to dynamically condition agents to control their behavior?** Since high level conditioning data only provides a general handle on agent behavior, would a user commanding the agent in realtime be able to adjust his or her commands dynamically to more reliably achieve high level targets?
-- **Will centralized shared-parameter multiagent training efficently improve performance?** Although parameter sharing in reinforcement learning [generally accelerates learning in MARL](https://arxiv.org/abs/2005.13625), is it worth the cost to centralize training these huge architectures?
+- **Will centralized shared-parameter multiagent training efficiently improve performance?** Although parameter sharing in reinforcement learning [generally accelerates learning in MARL](https://arxiv.org/abs/2005.13625), is it worth the cost to centralize training these huge architectures?
 
 # Contributing
 
