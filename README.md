@@ -19,8 +19,11 @@ badges: code quality, build status, version
 ## Running
 
 1. first step
-
 2. last step
+
+## Contributing
+
+Have an agent, implementation, or experiment that you would like to share? Please initiate a pull request at the Github repository.
 
 # Background
 
@@ -285,7 +288,7 @@ To evaluate the open ended performance of Nodal-RL, experiments test
 - **In-context and Multiple Domain learning**: how quickly the agent can adapt from pure observation without any gradient updates and measuring the performance of this adaptation across diverse skill domains 
 - **Diverse Agent-Environments**: some on the experimentation list: board games (chess, checkers, go), kinesthetic (one legged hopper, spider, humanoid), content completion (video from frame sequence, natural language modeling, image inpainting, music generation), computer interface (web surfing, VM Bash interface, VM gui interface, world of bits++), 3D worlds (MALMO, Second Life), design (natural language documents, artwork, mechanical engineering, electrical engineering using VM interface), second-hand research (using VM interface with Internet), programming (using VM interface, Desmos, GeoGebra, Bash REPL, Jupyter Python, selfML), and conditioning with only natural language conversation and interactive demonstrations to complete real world objectives.
 
-Specific experiments are published under [Notebooks](https://github.com/Nodal-RL/notebooks). All data for a single timestep are represented by $1$-dimensional tensors. In initial experiments, agents will consist of only specialized nodes. As more environments are experimented with, however, nodes will be reused with greater frequency and less architecture change. Ultimately, the agent will consist of a virtual machine interface where tasks are conditioned with an axillary natural language interface and at times by overriding the policy with manual demonstrations.
+Specific experiments are published under [Notebooks](https://github.com/Nodal-RL/notebooks). All data for a single timestep are represented by $2$-dimensional probabilistic tensors with `tensorflow` with the second dimension representing random variations along the $N$ elements that extend in the datum's first dimension. In initial experiments, agents will consist of only specialized nodes. As more environments are experimented with, however, nodes will be reused with greater frequency and less architecture change. Ultimately, the agent will consist of a virtual machine interface where tasks are conditioned with an axillary natural language interface and at times by overriding the policy with manual demonstrations.
 
 # Results
 
@@ -304,10 +307,6 @@ General conclusion here
 - **How could transformer neural networks learn when to dream ($\NN_{transformer}(\opast)$) instead of employing a blind rolling average ($\text{Percieved Observation }\o$)?**
 - **Can humans learn to dynamically condition agents to control their behavior?** Since high level conditioning data only provides a general handle on agent behavior, would a user commanding the agent in realtime be able to adjust his or her commands dynamically to more reliably achieve high level targets?
 - **Will centralized shared-parameter multiagent training efficiently improve performance?** Although parameter sharing in reinforcement learning [generally accelerates learning in MARL](https://arxiv.org/abs/2005.13625), is it worth the cost to centralize training these huge architectures?
-
-# Contributing
-
-Have an agent, implimentation, or experiment that you would like to share? Please initiate a pull request at the official Github repository.
 
 # License
 
